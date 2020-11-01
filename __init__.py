@@ -28,23 +28,24 @@ class OBJECT_OT_apply_parent_inverse(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):  # execute() is called when running the operator
-        obj = context.active_object
+        for obj in context.selected_objects:
+            # obj = context.active_object
 
-        # code from https://blender.stackexchange.com/a/28897
+            # code from https://blender.stackexchange.com/a/28897
 
-        # store a copy of the objects final transformation
-        # so we can read from it later.
-        ob_matrix_orig = obj.matrix_world.copy()
+            # store a copy of the objects final transformation
+            # so we can read from it later.
+            ob_matrix_orig = obj.matrix_world.copy()
 
-        # reset parent inverse matrix
-        # (relationship created when parenting)
-        obj.matrix_parent_inverse.identity()
+            # reset parent inverse matrix
+            # (relationship created when parenting)
+            obj.matrix_parent_inverse.identity()
 
-        # re-apply the difference between parent/child
-        # (this writes directly into the loc/scale/rot) via a matrix.
-        obj.matrix_basis = obj.parent.matrix_world.inverted() @ ob_matrix_orig
+            # re-apply the difference between parent/child
+            # (this writes directly into the loc/scale/rot) via a matrix.
+            obj.matrix_basis = obj.parent.matrix_world.inverted() @ ob_matrix_orig
 
-        return {'FINISHED'}  # Lets Blender know the operator finished successfully.
+            return {'FINISHED'}  # Lets Blender know the operator finished successfully.
 
 
 def menu_func(self, context):
